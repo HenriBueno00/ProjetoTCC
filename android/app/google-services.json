@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1048912271648",
+    "project_id": "vocemaissegura-4b45a",
+    "storage_bucket": "vocemaissegura-4b45a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048912271648:android:51e2ce64d91ffccfb2df45",
+        "android_client_info": {
+          "package_name": "com.example.voce_mais_segura"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlUae30FRG1DqilvPfTHwxYpHNmoq3zmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

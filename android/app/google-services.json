@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1048912271648:android:51e2ce64d91ffccfb2df45",
+        "mobilesdk_app_id": "1:1048912271648:android:05dfda16fd9cd195b2df45",
         "android_client_info": {
-          "package_name": "com.example.voce_mais_segura"
+          "package_name": "com.example.voce_mais_seg"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1048912271648-17rms6i9l2h8sjg8f6k4v8tq9j4jskcj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAlUae30FRG1DqilvPfTHwxYpHNmoq3zmo"
@@ -20,7 +25,41 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048912271648-17rms6i9l2h8sjg8f6k4v8tq9j4jskcj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048912271648:android:51e2ce64d91ffccfb2df45",
+        "android_client_info": {
+          "package_name": "com.example.voce_mais_segura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048912271648-17rms6i9l2h8sjg8f6k4v8tq9j4jskcj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlUae30FRG1DqilvPfTHwxYpHNmoq3zmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048912271648-17rms6i9l2h8sjg8f6k4v8tq9j4jskcj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

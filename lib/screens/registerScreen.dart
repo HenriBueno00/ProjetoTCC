@@ -1,86 +1,89 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:voce_mais_segura/firebase/authService.dart'; // Importar o AuthService
-import 'package:voce_mais_segura/screens/home.dart';
 
-class Registerscreen extends StatefulWidget {
-  const Registerscreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<Registerscreen> createState() => _RegisterscreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterscreenState extends State<Registerscreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();  // Instanciar o AuthService
+class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? errorMessage;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _registerWithEmail() async {
-    User? user = await _authService.registerWithEmail(
-      _emailController.text,
-      _passwordController.text,
-    );
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao registrar com e-mail')),
-      );
+  Future<void> _registerWithEmailAndPassword() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      setState(() {
+        errorMessage = 'As senhas não coincidem';
+      });
+      return;
     }
-  }
 
-  Future<void> _signInWithGoogle() async {
-    User? user = await _authService.signInWithGoogle();
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login com Google')),
-      );
+      Navigator.pop(context); // Volta para a tela de login ou onde quiser redirecionar
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registrar')),
+      appBar: AppBar(
+        title: const Text('Registrar'),
+        backgroundColor: const Color(0xFF53a08e),
+      ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'E-mail'),
-              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                errorText: errorMessage,
+              ),
             ),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Senha'),
               obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Senha',
+                errorText: errorMessage,
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _registerWithEmail,
-              child: Text('Registrar com E-mail'),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Confirmar Senha',
+                errorText: errorMessage,
+              ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: _signInWithGoogle,
-              child: Text('Registrar com Google'),
+              onPressed: _registerWithEmailAndPassword,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF53a08e),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Registrar'),
             ),
           ],
         ),

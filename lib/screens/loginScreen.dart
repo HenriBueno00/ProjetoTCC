@@ -1,63 +1,52 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:voce_mais_segura/firebase/authService.dart'; // Importar o AuthService
-import 'package:voce_mais_segura/screens/registerScreen.dart';
 import 'package:voce_mais_segura/screens/home.dart';
+import 'package:voce_mais_segura/screens/registerscreen.dart'; // Importe a tela de registro
 
-class Loginscreen extends StatefulWidget {
-  const Loginscreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<Loginscreen> createState() => _LoginscreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginscreenState extends State<Loginscreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();  // Instanciar o AuthService
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? errorMessage;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
   }
 
-  Future<void> _signInWithEmail() async {
-    User? user = await _authService.signInWithEmail(
-      _emailController.text,
-      _passwordController.text,
+  void _navigateToRegisterScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegisterScreen()),
     );
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login com email')),
-      );
-    }
-  }
-
-  Future<void> _signInWithGoogle() async {
-    User? user = await _authService.signInWithGoogle();
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login com Google')),
-      );
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        title: const Text('Login'),
+        backgroundColor: const Color(0xFF53a08e),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -65,56 +54,43 @@ class _LoginscreenState extends State<Loginscreen> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'E-mail'),
-              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                errorText: errorMessage,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Senha'),
               obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Senha',
+                errorText: errorMessage,
+              ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: _signInWithEmail,
-              child: const Text('Login com E-mail'),
+              onPressed: _signInWithEmailAndPassword,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF53a08e),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Login'),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _signInWithGoogle,
-              child: const Text('Login com Google'),
-            ),
+            const SizedBox(height: 16.0),
             TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Registerscreen()),
-                );
-              },
-              child: const Text('Não tem uma conta? Registre-se'),
+              onPressed: _navigateToRegisterScreen,
+              child: const Text(
+                'Ainda não possui conta? Crie uma',
+                style: TextStyle(color: Color(0xFF53a08e)),
+              ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Voce Mais Segura',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Loginscreen(), // Certifique-se de definir a tela de login aqui
     );
   }
 }
